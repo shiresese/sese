@@ -208,7 +208,7 @@ window.onload = function() {
         regex = /<img src="((?:(?!\s).)*)"/;
         imgSrc = (ref = regex.exec(post.body)) != null ? ref[1] : void 0;
         if (imgSrc == null) {
-          imgSrc = "/resource/noimage.png";
+          imgSrc = "./resource/noimage.png";
         }
         onclick = function() {
           return showModal(post);
