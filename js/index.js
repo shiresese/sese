@@ -1,8 +1,11 @@
 window.onload = function() {
-  var Infos, Modal, Tags, Works, currentScrollTop, easeOption, formatDate, getTumblrPosts, hideModal, iframe, moveToId, openLink, path, path_length, pathj, setBGOpacity, showModal, sidebar;
+  var CSSTransitionGroup, Infos, Modal, Tags, Works, currentScrollTop, easeOption, formatDate, getTumblrPosts, hideModal, iframe, moveToId, openLink, path, path_length, pathj, setBGOpacity, showModal, sidebar;
+  CSSTransitionGroup = React.addons.CSSTransitionGroup;
+  $("#background").hide();
   $("#cover").fadeOut(500, function() {
-    return $("#background").css("opacity", 1);
+    return $("#background").fadeIn(500);
   });
+  $("#prof-twitter").addClass("ss-link");
   getTumblrPosts = function(tag, callback) {
     var api_key, domain, option;
     domain = "side-se.tumblr.com";
@@ -39,7 +42,9 @@ window.onload = function() {
   };
   openLink = function(link) {
     return function() {
-      return window.open(link);
+      return $("#cover").fadeIn(500, function() {
+        return window.location.href = link;
+      });
     };
   };
   currentScrollTop = 0;
@@ -99,7 +104,8 @@ window.onload = function() {
         link = "http://side-se.tumblr.com/tagged/" + tag;
         return React.createElement("li", {
           "className": "post-tag ss-link",
-          "onClick": openLink(link)
+          "onClick": openLink(link),
+          "key": tag
         }, React.createElement("p", null, tag));
       });
       return React.createElement("ul", {
@@ -123,55 +129,77 @@ window.onload = function() {
       })(this));
     },
     render: function() {
-      var items, latest, openTumblr;
+      var infolink, items, latest, openTumblr;
+      items = [];
       if (this.state.posts.length === 0) {
-        return React.createElement("div", {
-          "className": "loading"
+        items.push(React.createElement("div", {
+          "className": "loading",
+          "key": "loading"
         }, React.createElement("i", {
           "className": "fa fa-2x fa-spinner fa-spin"
-        }));
-      }
-      items = [];
-      latest = this.state.posts[0];
-      openTumblr = openLink(latest.post_url);
-      items.push(React.createElement("div", {
-        "className": "latest-info"
-      }, React.createElement("span", {
-        "className": "post-date"
-      }, formatDate(latest.date)), React.createElement("span", {
-        "className": "post-title ss-link",
-        "onClick": openTumblr
-      }, latest.title), React.createElement(Tags, {
-        "tags": latest.tags
-      }), React.createElement("div", {
-        "className": "post-body",
-        "dangerouslySetInnerHTML": {
-          __html: latest.body
-        }
-      })));
-      items.push(this.state.posts.slice(1).map(function(post, i) {
-        var dateString, onclick, title;
-        title = post.title;
-        if (title == null) {
-          title = "(名称未設定)";
-        }
-        dateString = formatDate(post.date, "YYYY.MM.DD");
-        onclick = function() {
-          return showModal(post);
-        };
-        return React.createElement("li", {
-          "className": "info-ele",
-          "id": "info-" + i
+        })));
+      } else {
+        latest = this.state.posts[0];
+        openTumblr = openLink(latest.post_url);
+        items.push(React.createElement("div", {
+          "className": "info-latest",
+          "key": "info-latest"
+        }, React.createElement("p", {
+          "className": "info-latest-title ss-link",
+          "onClick": openTumblr
+        }, latest.title), React.createElement("div", {
+          "className": "info-latest-info clearfix"
         }, React.createElement("span", {
-          "className": "info-date"
-        }, dateString), React.createElement("span", {
-          "className": "info-title ss-link",
-          "onClick": onclick
-        }, title));
-      }));
+          "className": "info-latest-date left"
+        }, formatDate(latest.date)), React.createElement("div", {
+          "className": "left"
+        }, React.createElement(Tags, {
+          "tags": latest.tags
+        }))), React.createElement("div", {
+          "className": "info-latest-body",
+          "dangerouslySetInnerHTML": {
+            __html: latest.body
+          }
+        })));
+        items.push(this.state.posts.slice(1).map(function(post, i) {
+          var dateString, onclick, title;
+          title = post.title;
+          if (title == null) {
+            title = "(名称未設定)";
+          }
+          dateString = formatDate(post.date, "YYYY.MM.DD");
+          onclick = openLink(post.post_url);
+          return React.createElement("li", {
+            "className": "info-ele",
+            "id": "info-" + i,
+            "key": "info-" + i
+          }, React.createElement("span", {
+            "className": "info-date"
+          }, dateString), React.createElement("span", {
+            "className": "info-title ss-link",
+            "onClick": onclick
+          }, title));
+        }));
+        infolink = "http://side-se.tumblr.com/tagged/info";
+        items.push(React.createElement("li", {
+          "className": "info-ele",
+          "key": "info-old"
+        }, React.createElement("span", {
+          "className": "info-date hidden"
+        }, "2030.10.31"), React.createElement("span", {
+          "className": "info-title old-posts ss-link",
+          "onClick": openLink(infolink)
+        }, "(old posts...)")));
+      }
       return React.createElement("div", {
         "className": "infos"
-      }, React.createElement("ul", null, items));
+      }, React.createElement(CSSTransitionGroup, {
+        "component": "ul",
+        "transitionName": "fade",
+        "transitionEnterTimeout": 500,
+        "transitionLeaveTimeout": 500,
+        "className": "infos-ul"
+      }, items));
     }
   });
   ReactDOM.render(React.createElement(Infos, null), document.getElementsByClassName('info-inner')[0]);
@@ -192,40 +220,39 @@ window.onload = function() {
     },
     render: function() {
       var items;
-      if (this.state.posts.length === 0) {
-        return React.createElement("div", {
-          "className": "loading"
-        }, React.createElement("i", {
-          "className": "fa fa-2x fa-spinner fa-spin"
-        }));
+      items = [];
+      if (this.state.posts.length !== 0) {
+        items = this.state.posts.map(function(post, i) {
+          var imgSrc, onclick, ref, regex, title;
+          title = post.title;
+          if (title == null) {
+            title = "(名称未設定)";
+          }
+          regex = /<img src="((?:(?!\s).)*)"/;
+          imgSrc = (ref = regex.exec(post.body)) != null ? ref[1] : void 0;
+          if (imgSrc == null) {
+            imgSrc = "./resource/noimage.png";
+          }
+          onclick = openLink(post.post_url);
+          return React.createElement("li", {
+            "className": "work ss-link",
+            "id": "work-" + i,
+            "key": "work-" + i,
+            "onClick": onclick
+          }, React.createElement("img", {
+            "className": "work-image",
+            "height": "200px",
+            "src": imgSrc
+          }), React.createElement("div", {
+            "className": "work-title"
+          }, title));
+        });
       }
-      items = this.state.posts.map(function(post, i) {
-        var imgSrc, onclick, ref, regex, title;
-        title = post.title;
-        if (title == null) {
-          title = "(名称未設定)";
-        }
-        regex = /<img src="((?:(?!\s).)*)"/;
-        imgSrc = (ref = regex.exec(post.body)) != null ? ref[1] : void 0;
-        if (imgSrc == null) {
-          imgSrc = "./resource/noimage.png";
-        }
-        onclick = function() {
-          return showModal(post);
-        };
-        return React.createElement("li", {
-          "className": "work",
-          "id": "work-" + i,
-          "onClick": onclick
-        }, React.createElement("img", {
-          "className": "work-image",
-          "height": "200px",
-          "src": imgSrc
-        }), React.createElement("div", {
-          "className": "work-title"
-        }, title));
-      });
-      return React.createElement("ul", {
+      return React.createElement(CSSTransitionGroup, {
+        "component": "ul",
+        "transitionName": "fade",
+        "transitionEnterTimeout": 500,
+        "transitionLeaveTimeout": 500,
         "className": "clearfix"
       }, items);
     }
