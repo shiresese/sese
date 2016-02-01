@@ -1,13 +1,52 @@
 window.onload = function() {
-  var CSSTransitionGroup, Infos, Modal, Tags, Works, currentScrollTop, easeOption, formatDate, getTumblrPosts, hideModal, iframe, moveToId, openLink, path, path_length, pathj, setBGOpacity, showModal, sidebar;
+  var CSSTransitionGroup, Infos, Modal, Tags, Works, currentScrollTop, easeOption, formatDate, genFlowers, getTumblrPosts, hideModal, iframe, moveToId, openLink, openLinkNewTab, path, path_length, pathj, setBGOpacity, showModal, sidebar, twilink;
   CSSTransitionGroup = React.addons.CSSTransitionGroup;
   $("#background").hide();
   $("#cover").fadeOut(500, function() {
     return $("#background").fadeIn(500);
   });
   $("#prof-twitter").addClass("ss-link");
+  genFlowers = function() {
+    var cb, downspeed, flower, img, max_width, n, opacity, results, width;
+    n = 0;
+    results = [];
+    while (n++ < 40) {
+      flower = document.createElement("div");
+      img = document.createElement("img");
+      flower.classList.add("flower");
+      img.setAttribute("src", "./resource/hanap.png");
+      flower.style.right = Math.random() * 100 + "%";
+      max_width = 100;
+      width = -1 * Math.log(1 - Math.random()) * 50;
+      img.style.width = width + "px";
+      downspeed = "downf10";
+      if (width > max_width * 0.5) {
+        if (width > max_width * 0.8) {
+          downspeed = "downf20";
+        } else {
+          downspeed = "downf15";
+        }
+      }
+      flower.classList.add(downspeed);
+      opacity = Math.random();
+      img.style.opacity = width > max_width ? 0.1 : opacity;
+      flower.appendChild(img);
+      $(img).hover(function() {
+        return $(this).css("transform", "rotateY(180deg)");
+      });
+      cb = (function(f) {
+        return function() {
+          return document.getElementById("top-wrapper").appendChild(f);
+        };
+      })(flower);
+      results.push(setTimeout(cb, parseInt(Math.random() * 10000)));
+    }
+    return results;
+  };
+  genFlowers();
   getTumblrPosts = function(tag, callback) {
     var api_key, domain, option;
+    return;
     domain = "side-se.tumblr.com";
     api_key = "1FLh5aV3GU5wC1ofWdUqxhcX5XkNDLjLh66XypGvSvkErzCwhH";
     option = [];
@@ -41,10 +80,19 @@ window.onload = function() {
     return format;
   };
   openLink = function(link) {
+    return function(e) {
+      if (e.metaKey) {
+        return window.open(link);
+      } else {
+        return $("#cover").fadeIn(500, function() {
+          return window.location.href = link;
+        });
+      }
+    };
+  };
+  openLinkNewTab = function(link) {
     return function() {
-      return $("#cover").fadeIn(500, function() {
-        return window.location.href = link;
-      });
+      return window.open(link);
     };
   };
   currentScrollTop = 0;
@@ -67,7 +115,7 @@ window.onload = function() {
   };
   $(document).keydown(function(e) {
     if (e.keyCode === 27) {
-      return hideModal();
+      return moveToId();
     }
   });
   Modal = React.createClass({
@@ -289,13 +337,18 @@ window.onload = function() {
   $(window).scroll(setBGOpacity);
   moveToId = function(id) {
     var to;
-    to = $(id).offset().top;
+    if (id) {
+      to = $(id).offset().top;
+    } else {
+      id = "#";
+      to = 0;
+    }
     return $("html, body").animate({
       scrollTop: to
     }, {
       duration: "normal",
       complete: function() {
-        return location.hash = id;
+        return location.href = id;
       }
     });
   };
@@ -329,5 +382,7 @@ window.onload = function() {
     showModal({});
     return console.log($(this)[0].id);
   });
+  twilink = "https://twitter.com/seseri7th";
+  $("#prof-twitter").click(openLinkNewTab(twilink));
   return setBGOpacity();
 };

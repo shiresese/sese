@@ -7,6 +7,90 @@
   transition-duration: 500ms;
   transition-timing-function: cubic-bezier(0.465, 0.183, 0.153, 0.946);
 }
+@-moz-keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes move1 {
+  0% {
+    top: -100px;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    top: calc(100% + 100px);
+  }
+}
+@-webkit-keyframes move1 {
+  0% {
+    top: -100px;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    top: calc(100% + 100px);
+  }
+}
+@keyframes move1 {
+  0% {
+    top: -100px;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    top: calc(100% + 100px);
+  }
+}
+.downf10 {
+  -webkit-animation: move1 10s linear infinite normal, spin 2s linear infinite normal;
+  -moz-animation: move1 10s linear infinite normal, spin 2s linear infinite normal;
+  animation: move1 10s linear infinite normal, spin 2s linear infinite normal;
+}
+.downf15 {
+  -webkit-animation: move1 15s linear infinite normal, spin 5s linear infinite normal;
+  -moz-animation: move1 15s linear infinite normal, spin 5s linear infinite normal;
+  animation: move1 15s linear infinite normal, spin 5s linear infinite normal;
+}
+.downf20 {
+  -webkit-animation: move1 20s linear infinite normal, spin 10s linear infinite normal;
+  -moz-animation: move1 20s linear infinite normal, spin 10s linear infinite normal;
+  animation: move1 20s linear infinite normal, spin 10s linear infinite normal;
+}
+.flower {
+  position: absolute;
+  top: -100px;
+  right: 20%;
+  transform: perspective(100px);
+}
+.flower img {
+  transition-property: all;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.465, 0.183, 0.153, 0.946);
+  transform: rotateY(0deg);
+}
 .updown {
   -webkit-animation: vertical 1s ease-in-out infinite alternate;
   -moz-animation: vertical 1s ease-in-out infinite alternate;
@@ -35,10 +119,6 @@
   100% {
     transform: translateY(-10px);
   }
-}
-body.noscroll {
-  position: fixed;
-  overflow-y: hidden;
 }
 .ss-link {
   cursor: pointer;
@@ -211,6 +291,7 @@ iframe {
 .top .top-wrapper {
   z-index: 9;
   position: absolute;
+  overflow: hidden;
   width: 100%;
   height: 100%;
 }
@@ -243,8 +324,8 @@ iframe {
   top: 0;
   right: 0;
   text-align: right;
-  transition-property: opacity;
-  transition-duration: background-color;
+  transition-property: opacity, background-color;
+  transition-duration: 500ms;
   transition-timing-function: cubic-bezier(0.465, 0.183, 0.153, 0.946);
 }
 .sidebar .sidebar-title {
@@ -277,11 +358,6 @@ iframe {
 .body {
   width: calc(88% - 154px);
   height: 100%;
-}
-@media screen and (max-width: 1000px) {
-  .body {
-    width: 720px;
-  }
 }
 .body .info {
   min-height: 720px;
@@ -397,4 +473,16 @@ iframe {
 ::-webkit-scrollbar-thumb {
   background: #DADADA;
   border-radius: 5px;
+}
+@media screen and (max-width: 1000px) {
+  html {
+    width: 720px;
+  }
+  .background > img {
+    position: absolute;
+    right: 0;
+  }
+  .sidebar {
+    display: none;
+  }
 }
