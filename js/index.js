@@ -46,7 +46,6 @@ window.onload = function() {
   genFlowers();
   getTumblrPosts = function(tag, callback) {
     var api_key, domain, option;
-    return;
     domain = "side-se.tumblr.com";
     api_key = "1FLh5aV3GU5wC1ofWdUqxhcX5XkNDLjLh66XypGvSvkErzCwhH";
     option = [];
