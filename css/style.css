@@ -478,6 +478,15 @@ iframe {
   html {
     width: 720px;
   }
+  .top .title {
+    font-size: 12vh;
+    top: 5%;
+    left: auto;
+    right: 5%;
+  }
+  .body {
+    width: 100%;
+  }
   .background > img {
     position: absolute;
     right: 0;

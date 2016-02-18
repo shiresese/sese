@@ -1,6 +1,15 @@
+window.onpageshow = function(event) {
+  if (event.persisted) {
+    return $("#cover").fadeOut(500);
+  }
+};
+
 window.onload = function() {
   var CSSTransitionGroup, Infos, Modal, Tags, Works, currentScrollTop, easeOption, formatDate, genFlowers, getTumblrPosts, hideModal, iframe, moveToId, openLink, openLinkNewTab, path, path_length, pathj, setBGOpacity, showModal, sidebar, twilink;
   CSSTransitionGroup = React.addons.CSSTransitionGroup;
+  if ($(window).width() < 1000) {
+    $("#background").css("height", $(window).height() * 1.2 + "px");
+  }
   $("#background").hide();
   $("#cover").fadeOut(500, function() {
     return $("#background").fadeIn(500);
@@ -31,9 +40,14 @@ window.onload = function() {
       opacity = Math.random();
       img.style.opacity = width > max_width ? 0.1 : opacity;
       flower.appendChild(img);
-      $(img).hover(function() {
-        return $(this).css("transform", "rotateY(180deg)");
-      });
+      cb = function() {
+        var deg;
+        deg = 0;
+        return function() {
+          return $(this).css("transform", "rotateY(" + (deg += 120) + "deg)");
+        };
+      };
+      $(img).hover(cb());
       cb = (function(f) {
         return function() {
           return document.getElementById("top-wrapper").appendChild(f);
